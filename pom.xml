@@ -8,6 +8,11 @@
     <artifactId>GalleryBot</artifactId>
     <version>0.9</version>
 
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
     <repositories>
         <repository>
             <id>jcenter</id>
@@ -70,12 +75,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.8.0</version> <!--Added because wouldnt maven compile without this-->
                 <configuration>
-                    <release>12</release>
-                    <source>12</source>
-                    <target>12</target>
-                    <compilerArgs>--enable-preview</compilerArgs>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
 
@@ -88,6 +91,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
+                            <!-- Specify your own main class here: {package}.{class} -->
                             <mainClass>me.GalleryBot</mainClass>
                         </manifest>
                     </archive>

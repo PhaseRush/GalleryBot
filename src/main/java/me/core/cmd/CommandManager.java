@@ -1,19 +1,26 @@
 package me.core.cmd;
 
-import jdk.jshell.execution.Util;
 import me.commands.Ping;
+import me.util.DiscordUtil;
 import me.util.Utils;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CommandManager {
-    public Map<String, Command> commandMap = new LinkedHashMap<>();
+    public static Map<String, Command> commandMap = new LinkedHashMap<>();
 
     public CommandManager() {
         commandMap.put("ping", new Ping());
     }
+
+    // sync executor
+    private final static ExecutorService SYNC = Executors.newFixedThreadPool(1);
+    // general executor
+    private final static ExecutorService EXECUTORS = Executors.newCachedThreadPool();
 
     @EventSubscriber
     public void onMsgReceived(MessageReceivedEvent event) {
@@ -22,7 +29,7 @@ public class CommandManager {
         List<String> argsList = new ArrayList<>();
 
         // first check channel prefix, then guild prefix, then lastly use default
-        String prefix = Utils.getPrefix(event);
+        String prefix = DiscordUtil.getPrefix(event);
         // If message doesn't start with BOT_PREFIX, check if it tags us
         if (!event.getMessage().getFormattedContent().startsWith(prefix)) {
             if (!event.getMessage().getContent().matches("<@(!)?" + event.getClient().getOurUser().getStringID() + ">.*")) {
@@ -31,7 +38,7 @@ public class CommandManager {
                 argArray = event.getMessage().getContent().substring(21).trim().split(" ", 2);
                 if (event.getMessage().getContent().replaceFirst("!", "").substring(21).trim().equals("")) { // if no command args at all, use help command
                     commandStr = "help";
-                    Utils.send(event.getChannel(), "My prefix here is : " + Utils.getPrefix(event));
+                    Utils.send(event.getChannel(), "My prefix here is : " + DiscordUtil.getPrefix(event));
                 } else {
                     commandStr = argArray[0];
                 }
@@ -46,16 +53,36 @@ public class CommandManager {
         // turn arg array into list
         if (argArray.length != 1) argsList.addAll(Arrays.asList(argArray[1].split(",[ ]?")));
 
-        if (!commandMap.containsKey(commandStr)) {
-            // do levenshtein
+        Command targetCmd = commandMap.get(commandStr);
+        if (targetCmd == null) {
+            if (commandStr.length() < 2) return;
+
+            Optional<Command> correctedCmd = Utils.cmdSpellCorrect(commandStr);
+            if (correctedCmd.isPresent()) {
+                targetCmd = correctedCmd.get();
+                Utils.send(event.getChannel(), "That command doesnt exist. Instead executing `" + targetCmd.getName() + "`");
+            }
+            else return;
         }
 
-        Command cmd = commandMap.get(commandStr);
-        Runnable runCmd = () -> {
-            cmd.execute(new Context());
+        final Command finalTargetCmd = targetCmd; // need for lambda
+        Runnable execution = () -> {
+            finalTargetCmd.execute(new Context(event));
+
+            Utils.LOG.info(String.format("CMD : %s (%d) ran %s in %s (%d)",
+                    DiscordUtil.getNickOrDefault(event),
+                    event.getAuthor().getLongID(),
+                    finalTargetCmd.getName(),
+                    event.getChannel().getName(),
+                    event.getChannel().getLongID()));
         };
         // if require sync
-    }
 
+        if (finalTargetCmd.requireSync()) {
+            SYNC.execute(execution);
+        } else {
+            EXECUTORS.execute(execution);
+        }
+    }
 
 }

@@ -9,6 +9,7 @@ data/*
 data
 logs/*
 modules/*
+target/*
 
 GalleryBot.iml
 

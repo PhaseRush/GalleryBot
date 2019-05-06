@@ -1,6 +1,8 @@
 package me.core.cmd;
 
 import me.commands.Ping;
+import me.core.error.CommandStateException;
+import me.core.error.MissingPermissionsException;
 import me.util.DiscordUtil;
 import me.util.Utils;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -60,24 +62,31 @@ public class CommandManager {
             Optional<Command> correctedCmd = Utils.cmdSpellCorrect(commandStr);
             if (correctedCmd.isPresent()) {
                 targetCmd = correctedCmd.get();
-                Utils.send(event.getChannel(), "That command doesnt exist. Instead executing `" + targetCmd.getName() + "`");
-            }
-            else return;
+                Utils.send(event.getChannel(), "That command doesnt exist - instead executing `" + targetCmd.getName() + "`");
+            } else return;
         }
 
         final Command finalTargetCmd = targetCmd; // need for lambda
+        final Context finalContext = new Context(event);
         Runnable execution = () -> {
-            finalTargetCmd.execute(new Context(event));
+            String error = "";
+            try {
+                finalTargetCmd.execute(finalContext);
+            } catch (CommandStateException | MissingPermissionsException throwable) {
+                error = String.format(" with error %s", throwable.getMessage());
+            } finally{
+                Utils.LOG.info(String.format("CMD : %s (%d) ran %s in %s (%d)",
+                        DiscordUtil.getNickOrDefault(event),
+                        event.getAuthor().getLongID(),
+                        finalTargetCmd.getName(),
+                        event.getChannel().getName(),
+                        event.getChannel().getLongID())
+                        + error);
+            }
 
-            Utils.LOG.info(String.format("CMD : %s (%d) ran %s in %s (%d)",
-                    DiscordUtil.getNickOrDefault(event),
-                    event.getAuthor().getLongID(),
-                    finalTargetCmd.getName(),
-                    event.getChannel().getName(),
-                    event.getChannel().getLongID()));
         };
-        // if require sync
 
+        // if require sync
         if (finalTargetCmd.requireSync()) {
             SYNC.execute(execution);
         } else {

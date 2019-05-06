@@ -3,6 +3,7 @@ package me;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import me.core.cmd.CommandManager;
+import me.passive.ReactionListener;
 import me.util.Utils;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
@@ -20,6 +21,7 @@ public class GalleryBot {
     public static IDiscordClient client;
 
     public static void main(String[] args) {
+        Utils.LOG.info("GalleryBot starting ...");
         Locale.setDefault(Locale.CANADA);
         Runtime.getRuntime().addShutdownHook(new Thread(GalleryBot::onShutdown));
 
@@ -37,7 +39,10 @@ public class GalleryBot {
                 .withRecommendedShardCount()
                 .build();
 
-        Object[] dispatchListeners = {new CommandManager()};
+        Object[] dispatchListeners = {
+                new CommandManager(),
+                new ReactionListener()
+        };
 
         client.getDispatcher().registerListeners(dispatchListeners);
         client.login();
@@ -47,6 +52,6 @@ public class GalleryBot {
 
 
     private static void onShutdown() {
-        Utils.LOG.info("Shutting down ...");
+        Utils.LOG.info("Shutting down gracefully ...");
     }
 }

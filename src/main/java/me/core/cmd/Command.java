@@ -1,14 +1,26 @@
 package me.core.cmd;
 
+import me.core.error.CommandStateException;
+import me.core.error.MissingPermissionsException;
+import me.core.permission.Permission;
+
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public abstract class Command {
-    String name;
-    Set<String> aliases;
+    private final String name;
+    private final List<String> aliases;
+    private final Permission permission;
+
+    public Command(Permission permission, List<String> aliases, String name) {
+        this.name = name;
+        this.aliases = aliases;
+        this.permission = permission;
+    }
 
     // execute the command
-    public abstract void execute(Context context);
+    public abstract void execute(Context context) throws CommandStateException, MissingPermissionsException;
 
     // can a command run
     public boolean canRun(Context context) {

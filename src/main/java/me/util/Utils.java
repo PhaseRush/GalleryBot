@@ -7,6 +7,7 @@ import me.core.cmd.CommandManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RequestBuffer;
@@ -57,9 +58,21 @@ public class Utils {
         });
     }
 
-
-
-
+    public static IMessage sendGet(IChannel channel, String message) {
+        return
+                RequestBuffer.request(() -> {
+                    try {
+                        return channel.sendMessage(message);
+                    } catch (DiscordException e) {
+                        System.err.println("Message could not be sent with error: ");
+                        e.printStackTrace();
+                        return null;
+                    } catch (MissingPermissionsException e) {
+                        System.out.println("Missing Permissions: " + channel.getName() + " Msg: " + message);
+                        return null;
+                    }
+                }).get();
+    }
 
     public static String readFile(String path) throws URISyntaxException, IOException {
         return Files.lines(Paths.get(System.getProperty("user.dir") + "/" + path)).collect(Collectors.joining("\n"));

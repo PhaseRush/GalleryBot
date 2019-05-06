@@ -1,5 +1,6 @@
 package me.core.cmd;
 
+import me.commands.Fetch;
 import me.commands.Ping;
 import me.core.error.CommandStateException;
 import me.core.error.MissingPermissionsException;
@@ -17,6 +18,7 @@ public class CommandManager {
 
     public CommandManager() {
         commandMap.put("ping", new Ping());
+        commandMap.put("fetch", new Fetch());
     }
 
     // sync executor
@@ -67,7 +69,7 @@ public class CommandManager {
         }
 
         final Command finalTargetCmd = targetCmd; // need for lambda
-        final Context finalContext = new Context(event);
+        final Context finalContext = new Context(event, finalTargetCmd.getName(), argsList);
         Runnable execution = () -> {
             String error = "";
             try {

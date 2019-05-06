@@ -20,6 +20,8 @@ public class GalleryBot {
     public static Map<String, String> launchConfig;
     public static IDiscordClient client;
 
+    public static final String GUILD_ID = "351908935017562113";
+
     public static void main(String[] args) {
         Utils.LOG.info("GalleryBot starting ...");
         Locale.setDefault(Locale.CANADA);
@@ -45,9 +47,9 @@ public class GalleryBot {
         };
 
         client.getDispatcher().registerListeners(dispatchListeners);
-        client.login();
+        Utils.LOG.info("Client has registered listeners successfully");
 
-        Utils.LOG.info("Client has registered listeners and logged in successfully");
+        client.login();
     }
 
 

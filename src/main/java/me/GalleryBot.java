@@ -1,7 +1,6 @@
 package me;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import me.core.cmd.CommandManager;
 import me.passive.ReactionListener;
 import me.util.Config;
@@ -9,15 +8,11 @@ import me.util.Utils;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 
-import java.lang.reflect.Type;
 import java.util.Locale;
-import java.util.Map;
 
 public class GalleryBot {
     private final static Gson gson = new Gson();
 
-    private static Type configType = new TypeToken<Map<String,String>>(){}.getType();
-    public static final Map<String, String> config = gson.fromJson(Utils.readFile("data/launch.json"), configType);
     public static IDiscordClient client;
 
     public static void main(String[] args) {

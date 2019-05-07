@@ -132,7 +132,7 @@ public class Utils {
             return Permission.DEV;
         } else if (user.getRolesForGuild(GalleryBot.client.getGuildByID(Long.valueOf(Config.GUILD_ID.val))).stream()
                 .map(IIDLinkedObject::getStringID)
-                .anyMatch(roleId -> roleId.equals(GalleryBot.config.get("GIGAMOD_ROLE_ID")))) {
+                .anyMatch(roleId -> roleId.equals(Config.GIGAMOD_ROLE_ID.val))) {
             return Permission.ADMIN;
         } else {
             return Permission.USER;

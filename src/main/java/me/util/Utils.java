@@ -13,8 +13,6 @@ import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RequestBuffer;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Comparator;
@@ -23,22 +21,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Utils {
-    private static final Gson GSON = new Gson();
+    public static final Gson GSON = new Gson();
     public final static Logger LOG = LoggerFactory.getLogger("GalleryBot");
 
-
-    private static Type prefixMapType = new TypeToken<HashMap<String, String>>() {}.getType();
-    private static HashMap<String, String> prefixMap;
-
-    static {
-        try {
-            prefixMap = GSON.fromJson(
-                    readFile("data/prefix_map.json"),
-                    prefixMapType);
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
+    private static HashMap<String, String> prefixMap = GSON.fromJson(readFile("data/prefix_map.json"),
+            new TypeToken<HashMap<String, String>>() {}.getType());
 
     public static HashMap<String, String> getPrefixMap() {
         return prefixMap;
@@ -74,8 +61,13 @@ public class Utils {
                 }).get();
     }
 
-    public static String readFile(String path) throws URISyntaxException, IOException {
-        return Files.lines(Paths.get(System.getProperty("user.dir") + "/" + path)).collect(Collectors.joining("\n"));
+    public static String readFile(String path) {
+        try {
+            return Files.lines(Paths.get(System.getProperty("user.dir") + "/" + path)).collect(Collectors.joining("\n"));
+        } catch (IOException e) {
+            LOG.error(String.format("encountered error while trying to read %s : \n%s", path, e.getMessage()));
+        }
+        return null;
     }
 
     public static int levenDist(String s1, String s2) {

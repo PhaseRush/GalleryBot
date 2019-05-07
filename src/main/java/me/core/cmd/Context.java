@@ -43,4 +43,16 @@ public class Context {
     public IDiscordClient getClient() {
         return event.getClient();
     }
+
+    public List<String> getParams() {
+        return params;
+    }
+
+    public String getCmdName() {
+        return cmdName;
+    }
+
+    public MessageReceivedEvent getEvent() {
+        return event;
+    }
 }

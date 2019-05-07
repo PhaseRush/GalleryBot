@@ -6,7 +6,8 @@ public enum Emojis {
     A("\uD83C\uDDE6"),
     P("\uD83C\uDDF5");
 
-    ReactionEmoji emoji;
+    private ReactionEmoji emoji;
+
     Emojis(String unicode) {
         emoji = ReactionEmoji.of(unicode);
     }

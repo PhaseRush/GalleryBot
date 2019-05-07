@@ -8,16 +8,15 @@ import me.util.Utils;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
-import java.net.URISyntaxException;
 import java.util.Locale;
 import java.util.Map;
 
 public class GalleryBot {
     private final static Gson gson = new Gson();
 
-    public static Map<String, String> launchConfig;
+    private static Type configType = new TypeToken<Map<String,String>>(){}.getType();
+    public static final Map<String, String> config = gson.fromJson(Utils.readFile("data/launch.json"), configType);
     public static IDiscordClient client;
 
     public static final String GUILD_ID = "351908935017562113";
@@ -27,17 +26,8 @@ public class GalleryBot {
         Locale.setDefault(Locale.CANADA);
         Runtime.getRuntime().addShutdownHook(new Thread(GalleryBot::onShutdown));
 
-        try {
-            Type configType = new TypeToken<Map<String,String>>(){}.getType();
-            launchConfig = gson.fromJson(Utils.readFile("data/launch.json"), configType);
-        } catch (IOException | URISyntaxException e) {
-            Utils.LOG.error("Could not parse launch configuration map, shutting down");
-            e.printStackTrace();
-            System.exit(2);
-        }
-
         client = new ClientBuilder()
-                .withToken(launchConfig.get("DISCORD_TOKEN"))
+                .withToken(config.get("DISCORD_TOKEN"))
                 .withRecommendedShardCount()
                 .build();
 

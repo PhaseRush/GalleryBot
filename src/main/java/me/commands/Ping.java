@@ -3,7 +3,6 @@ package me.commands;
 import me.core.cmd.Command;
 import me.core.cmd.Context;
 import me.core.error.CommandStateException;
-import me.core.error.MissingPermissionsException;
 import me.core.permission.Permission;
 import me.util.Utils;
 import sx.blah.discord.handle.obj.IMessage;
@@ -17,7 +16,7 @@ public class Ping extends Command {
     }
 
     @Override
-    public void execute(Context context) throws CommandStateException, MissingPermissionsException {
+    public void execute(Context context) throws CommandStateException {
         long gatewayPing = System.currentTimeMillis() - context.getMessage().getTimestamp().toEpochMilli();
 
         long startSend = System.currentTimeMillis();

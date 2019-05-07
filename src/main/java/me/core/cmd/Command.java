@@ -1,8 +1,8 @@
 package me.core.cmd;
 
 import me.core.error.CommandStateException;
-import me.core.error.MissingPermissionsException;
 import me.core.permission.Permission;
+import me.util.Utils;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,11 +20,11 @@ public abstract class Command {
     }
 
     // execute the command
-    public abstract void execute(Context context) throws CommandStateException, MissingPermissionsException;
+    public abstract void execute(Context context) throws CommandStateException;
 
-    // can a command run
+    // By default, do simple permission check on the required perm. subclasses can override and add more restrictions
     public boolean canRun(Context context) {
-        return true;
+        return Utils.getPerm(context.getMessage().getAuthor()).isAdequate(permission);
     }
 
     // can be spell checked

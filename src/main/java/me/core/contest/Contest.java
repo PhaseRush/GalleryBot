@@ -1,18 +1,16 @@
 package me.core.contest;
 
-import sx.blah.discord.handle.obj.IUser;
-
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 public class Contest {
     private int contestNumber;
     private String contestId = UUID.randomUUID().toString(); // not sure if needed
-    private Set<ContestSubmission> submissions;
+    private List<ContestSubmission> submissions;
 
     // time intervals
     private LocalDate submissionStartTime; // beginning of month
@@ -21,15 +19,15 @@ public class Contest {
     private LocalDate votingEndTime; // end of 3rd day of next month
 
     // variables that change during or after contest:
-    private IUser winner; // announced right when voting ends
+    private String winnerId; // announced right when voting ends
     private boolean isFinished;
 
     public Contest(int contestNumber) {
-        this(contestNumber, Collections.emptySet());
+        this(contestNumber, Collections.emptyList());
     }
 
     // just ensure enough delay to use right day
-    public Contest(int contestNumber, Set<ContestSubmission> submissions) {
+    public Contest(int contestNumber, List<ContestSubmission> submissions) {
         this(contestNumber, submissions,
                 LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()),
                 LocalDate.now().with(TemporalAdjusters.firstDayOfNextMonth()),
@@ -37,7 +35,7 @@ public class Contest {
                 LocalDate.now().with(TemporalAdjusters.firstDayOfNextMonth()).plus(3, ChronoUnit.DAYS));
     }
 
-    public Contest(int contestNumber, Set<ContestSubmission> submissions, LocalDate submissionStartTime, LocalDate submissionEndTime, LocalDate votingStartTime, LocalDate votingEndTime) {
+    public Contest(int contestNumber, List<ContestSubmission> submissions, LocalDate submissionStartTime, LocalDate submissionEndTime, LocalDate votingStartTime, LocalDate votingEndTime) {
         this.contestNumber = contestNumber;
         this.submissions = submissions;
         this.submissionStartTime = submissionStartTime;
@@ -48,5 +46,9 @@ public class Contest {
 
     public void addSubmission(ContestSubmission submission) {
         submissions.add(submission);
+    }
+
+    public void setWinnerId(String id) {
+        this.winnerId = id;
     }
 }

@@ -11,7 +11,8 @@ public enum Permission {
         this.rank = rank;
     }
 
-    public boolean isHigher(Permission other) {
-        return this.rank > other.rank;
+    // checking that this is at least enough to satisfy the other
+    public boolean isAdequate(Permission other) {
+        return this.rank >= other.rank;
     }
 }

@@ -1,20 +1,18 @@
 package me.core.contest;
 
-import sx.blah.discord.handle.obj.IMessage;
-
 import java.time.Instant;
 
 public class ContestSubmission {
     private String artistName;
-    private IMessage message;
+    private String messageId;
     private String imgUrl;
     private Instant submissionTime; // message.getTimestamp()
 
     private int numVotes = 0;
 
-    public ContestSubmission(String artistName, IMessage message, String imgUrl) {
+    public ContestSubmission(String artistName, String messageId, String imgUrl) {
         this.artistName = artistName;
-        this.message = message;
+        this.messageId = messageId;
         this.imgUrl = imgUrl;
     }
 
@@ -22,11 +20,15 @@ public class ContestSubmission {
         return artistName;
     }
 
-    public IMessage getMessage() {
-        return message;
+    public String getMessageId() {
+        return messageId;
     }
 
     public String getImgUrl() {
         return imgUrl;
+    }
+
+    public Instant getSubmissionTime() {
+        return submissionTime;
     }
 }

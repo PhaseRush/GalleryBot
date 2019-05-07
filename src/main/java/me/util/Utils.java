@@ -2,12 +2,17 @@ package me.util;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import me.GalleryBot;
 import me.core.cmd.Command;
 import me.core.cmd.CommandManager;
+import me.core.cmd.Context;
+import me.core.permission.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IIDLinkedObject;
 import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RequestBuffer;
@@ -35,30 +40,23 @@ public class Utils {
     public static void send(IChannel channel, String message) {
         RequestBuffer.request(() -> {
             try {
-                channel.sendMessage(message);
-            } catch (DiscordException e) {
-                System.err.println("Message could not be sent with error: ");
-                e.printStackTrace();
-            } catch (MissingPermissionsException e) {
-                send(channel, "Missing Permissions: " + channel.getName() + " Msg: " + message);
+                return channel.sendMessage(message);
+            } catch (DiscordException | MissingPermissionsException e) {
+                LOG.error("Message could not be sent with error:\n" + e.getMessage());
+                return null;
             }
         });
     }
 
     public static IMessage sendGet(IChannel channel, String message) {
-        return
-                RequestBuffer.request(() -> {
-                    try {
-                        return channel.sendMessage(message);
-                    } catch (DiscordException e) {
-                        System.err.println("Message could not be sent with error: ");
-                        e.printStackTrace();
-                        return null;
-                    } catch (MissingPermissionsException e) {
-                        System.out.println("Missing Permissions: " + channel.getName() + " Msg: " + message);
-                        return null;
-                    }
-                }).get();
+        return RequestBuffer.request(() -> {
+            try {
+                return channel.sendMessage(message);
+            } catch (DiscordException | MissingPermissionsException e) {
+                LOG.error("Message could not be sent with error:\n" + e.getMessage());
+                return null;
+            }
+        }).get();
     }
 
     public static String readFile(String path) {
@@ -110,6 +108,10 @@ public class Utils {
         }
     }
 
+    public static boolean isDev(Context context) {
+        return context.getMessage().getAuthor().getStringID().equals(Config.DEV_ID.val);
+    }
+
     public static Optional<Command> cmdSpellCorrect(String inputStr) {
         return CommandManager.commandMap.entrySet().stream()
                 .filter(e -> e.getValue().canAutoCorrect())
@@ -122,7 +124,18 @@ public class Utils {
                 // this part is for checking the blacklist
                 .map(name -> new Pair<>(name, CommandManager.commandMap.get(name)))
                 .filter(pair -> !pair.getValue().autoCorrectBlackList().contains(inputStr))
-                .map(pair -> Optional.of(pair.getValue()))
-                .get();
+                .flatMap(pair -> Optional.of(pair.getValue())); // flatmap to ensure not nested Op<Op<Cmd>>
+    }
+
+    public static Permission getPerm(IUser user) {
+        if (user.getStringID().equals(Config.DEV_ID.val)) {
+            return Permission.DEV;
+        } else if (user.getRolesForGuild(GalleryBot.client.getGuildByID(Long.valueOf(Config.GUILD_ID.val))).stream()
+                .map(IIDLinkedObject::getStringID)
+                .anyMatch(roleId -> roleId.equals(GalleryBot.config.get("GIGAMOD_ROLE_ID")))) {
+            return Permission.ADMIN;
+        } else {
+            return Permission.USER;
+        }
     }
 }

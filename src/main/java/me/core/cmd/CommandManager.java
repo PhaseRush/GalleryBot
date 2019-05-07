@@ -3,7 +3,6 @@ package me.core.cmd;
 import me.commands.Fetch;
 import me.commands.Ping;
 import me.core.error.CommandStateException;
-import me.core.error.MissingPermissionsException;
 import me.util.DiscordUtil;
 import me.util.Utils;
 import sx.blah.discord.api.events.EventSubscriber;
@@ -70,11 +69,16 @@ public class CommandManager {
 
         final Command finalTargetCmd = targetCmd; // need for lambda
         final Context finalContext = new Context(event, finalTargetCmd.getName(), argsList);
+        // check if can run
+        if (!finalTargetCmd.canRun(finalContext)) { // not enough permissions, or any other restriction
+            finalContext.reply(String.format("You don't have permission to run `%s`", targetCmd.getName()));
+            return;
+        }
         Runnable execution = () -> {
             String error = "";
             try {
                 finalTargetCmd.execute(finalContext);
-            } catch (CommandStateException | MissingPermissionsException throwable) {
+            } catch (CommandStateException throwable) {
                 error = String.format(" with error %s", throwable.getMessage());
             } finally{
                 Utils.LOG.info(String.format("CMD : %s (%d) ran %s in %s (%d)",
@@ -85,7 +89,6 @@ public class CommandManager {
                         event.getChannel().getLongID())
                         + error);
             }
-
         };
 
         // if require sync

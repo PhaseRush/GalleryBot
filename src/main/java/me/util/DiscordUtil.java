@@ -12,9 +12,9 @@ public class DiscordUtil {
     }
 
     public static String getPrefix(MessageReceivedEvent event) { // cant use IID b/c need to preserve channel > guild
-        if (event.getChannel().isPrivate()) return Utils.getPrefixMap().get("DEFAULT_PREFIX");
+        if (event.getChannel().isPrivate()) return Config.DEFAULT_PREFIX.val;
         return Utils.getPrefixMap().getOrDefault(event.getChannel().getStringID(),
                 Utils.getPrefixMap().getOrDefault(event.getGuild().getStringID(),
-                        Utils.getPrefixMap().get("DEFAULT_PREFIX")));
+                        Config.DEFAULT_PREFIX.val));
     }
 }

@@ -9,7 +9,7 @@ public class ContestManager {
 
     private static Contest currentContest = Utils.GSON.fromJson(Utils.readFile("data/current_contest.json"),
             Contest.class);
-    private static List<Contest> pastContests = Utils.GSON.fromJson(Utils.readFile("data/past_contest.json"),
+    private static List<Contest> pastContests = Utils.GSON.fromJson(Utils.readFile("data/past_contests.json"),
             new TypeToken<List<Contest>>(){}.getType());
 
 

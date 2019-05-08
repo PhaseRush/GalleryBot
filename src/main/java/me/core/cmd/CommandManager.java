@@ -39,22 +39,26 @@ public class CommandManager {
                 return; // does not start with prefix AND does not start by tagging our user
             } else { // tagged
                 argArray = event.getMessage().getContent().substring(21).trim().split(" ", 2);
-                if (event.getMessage().getContent().replaceFirst("!", "").substring(21).trim().equals("")) { // if no command args at all, use help command
+                if (event.getMessage().getContent().replaceFirst(prefix, "").substring(21).trim().equals("")) { // if no command args at all, use help command
                     commandStr = "help";
-                    Utils.send(event.getChannel(), "My prefix here is : " + DiscordUtil.getPrefix(event));
+                    Utils.send(event.getChannel(), "My prefix here is : " + prefix);
                 } else {
                     commandStr = argArray[0];
                 }
             }
         } else { // start with bot prefix
-            // Given a message "/test arg1, arg2", argArray will contain ["$test", "arg1, arg2, ...."]
-            argArray = event.getMessage().getContent().split(" ", 2);
+            // Given a message "!gg test arg1 ", argArray will contain ["!gg", "test, "arg1, arg2, ...."]
+            argArray = event.getMessage().getContent().split(" ", 3);
             // Extract the "command" part of the first arg out by ditching the amount of characters present in the prefix
-            commandStr = argArray[0].substring(prefix.length());
+            try {
+                commandStr = argArray[1];
+            } catch (ArrayIndexOutOfBoundsException ignored) {
+                commandStr = "help"; // happens when someone ONLY sends prefix, so just treat like they need help
+            }
         }
 
         // turn arg array into list
-        if (argArray.length != 1) argsList.addAll(Arrays.asList(argArray[1].split(",[ ]?")));
+        if (argArray.length > 2) argsList.addAll(Arrays.asList(argArray[2].split(",[ ]?")));
 
         Command targetCmd = commandMap.get(commandStr);
         if (targetCmd == null) {

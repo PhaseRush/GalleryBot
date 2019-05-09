@@ -2,17 +2,13 @@ package me.util;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import me.GalleryBot;
 import me.core.cmd.Command;
 import me.core.cmd.CommandManager;
 import me.core.cmd.Context;
-import me.core.permission.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IIDLinkedObject;
 import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RequestBuffer;
@@ -127,15 +123,4 @@ public class Utils {
                 .flatMap(pair -> Optional.of(pair.getValue())); // flatmap to ensure not nested Op<Op<Cmd>>
     }
 
-    public static Permission getPerm(IUser user) {
-        if (user.getStringID().equals(Config.DEV_ID.val)) {
-            return Permission.DEV;
-        } else if (user.getRolesForGuild(GalleryBot.client.getGuildByID(Long.valueOf(Config.GUILD_ID.val))).stream()
-                .map(IIDLinkedObject::getStringID)
-                .anyMatch(roleId -> roleId.equals(Config.GIGAMOD_ROLE_ID.val))) {
-            return Permission.ADMIN;
-        } else {
-            return Permission.USER;
-        }
-    }
 }

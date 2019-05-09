@@ -17,5 +17,7 @@ public class ContestManager {
         currentContest.addSubmission(submission);
     }
 
-
+    public static Contest getCurrentContest() {
+        return currentContest;
+    }
 }

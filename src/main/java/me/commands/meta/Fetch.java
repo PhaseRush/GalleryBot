@@ -1,4 +1,4 @@
-package me.commands;
+package me.commands.meta;
 
 import me.core.cmd.Command;
 import me.core.cmd.Context;

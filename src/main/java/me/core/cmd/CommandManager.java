@@ -1,7 +1,7 @@
 package me.core.cmd;
 
-import me.commands.Fetch;
-import me.commands.Ping;
+import me.commands.meta.Fetch;
+import me.commands.meta.Ping;
 import me.core.error.CommandStateException;
 import me.util.DiscordUtil;
 import me.util.Utils;

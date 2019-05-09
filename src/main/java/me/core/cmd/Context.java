@@ -6,6 +6,7 @@ import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedE
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IUser;
 
 import java.util.List;
 
@@ -34,6 +35,10 @@ public class Context {
 
     public IMessage getMessage() {
         return event.getMessage();
+    }
+
+    public IUser getUser() {
+        return getMessage().getAuthor();
     }
 
     public boolean isPrivate() {

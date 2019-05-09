@@ -1,22 +1,18 @@
-package me.commands;
+package me.commands.meta;
 
 import me.core.cmd.Command;
 import me.core.cmd.Context;
-import me.core.error.CommandStateException;
-import me.core.permission.Permission;
 import me.util.Utils;
 import sx.blah.discord.handle.obj.IMessage;
-
-import java.util.Arrays;
 
 public class Ping extends Command {
 
     public Ping() {
-        super(Permission.USER, Arrays.asList("ping"), "ping");
+        super("ping");
     }
 
     @Override
-    public void execute(Context context) throws CommandStateException {
+    public void execute(Context context) {
         long gatewayPing = System.currentTimeMillis() - context.getMessage().getTimestamp().toEpochMilli();
 
         long startSend = System.currentTimeMillis();

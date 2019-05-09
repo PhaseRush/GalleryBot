@@ -10,15 +10,17 @@ public class ContestSubmission {
     private String messageId;
     private String imgUrl;
     private Instant submissionTime; // message.getTimestamp()
+    private String artistDiscordId;
 
     private int numVotes;
     private boolean isNSFW;
 
-    public ContestSubmission(String artistName, String messageId, String imgUrl, boolean isNSFW) {
+    public ContestSubmission(String artistName, String messageId, String imgUrl, boolean isNSFW, String artistDiscordId) {
         this.artistName = artistName;
         this.messageId = messageId;
         this.imgUrl = imgUrl;
         this.isNSFW = isNSFW;
+        this.artistDiscordId = artistDiscordId;
     }
 
     public String getArtistName() {
@@ -35,5 +37,13 @@ public class ContestSubmission {
 
     public Instant getSubmissionTime() {
         return submissionTime;
+    }
+
+    public int getNumVotes() {
+        return numVotes;
+    }
+
+    public String getArtistDiscordId() {
+        return artistDiscordId;
     }
 }

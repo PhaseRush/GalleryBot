@@ -1,6 +1,8 @@
 package me.core.cmd;
 
+import me.commands.contest.SubmitCmd;
 import me.commands.meta.Fetch;
+import me.commands.meta.HelpCmd;
 import me.commands.meta.Ping;
 import me.core.error.CommandStateException;
 import me.util.DiscordUtil;
@@ -13,18 +15,28 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class CommandManager {
+    // command map
     public static Map<String, Command> commandMap = new LinkedHashMap<>();
-
-    public CommandManager() {
-        commandMap.put("ping", new Ping());
-        commandMap.put("fetch", new Fetch());
-    }
 
     // sync executor
     private final static ExecutorService SYNC = Executors.newFixedThreadPool(1);
     // general executor
     private final static ExecutorService EXECUTORS = Executors.newCachedThreadPool();
 
+    public CommandManager() {
+        // meta
+        commandMap.put("ping", new Ping());
+        commandMap.put("fetch", new Fetch());
+        commandMap.put("help", new HelpCmd());
+
+        // contest
+        commandMap.put("submit", new SubmitCmd());
+    }
+
+    /**
+     * Responsible for detecting, parsing, and executing commands
+     * @param event dispatched event that needs to be processed
+     */
     @EventSubscriber
     public void onMsgReceived(MessageReceivedEvent event) {
         String[] argArray;

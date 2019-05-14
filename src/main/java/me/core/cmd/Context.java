@@ -7,6 +7,7 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.util.EmbedBuilder;
 
 import java.util.List;
 
@@ -23,6 +24,10 @@ public class Context {
 
     public void reply(String message) {
         Utils.send(event.getChannel(), message);
+    }
+
+    public void reply(EmbedBuilder eb) {
+        Utils.send(event.getChannel(), eb);
     }
 
     public IChannel getChannel() {

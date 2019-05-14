@@ -42,8 +42,11 @@ public abstract class Command {
         return false;
     }
 
-    // help message
+    // help message (also shows usage)
     public abstract String getHelp();
+
+    // short description about the command
+    public abstract String getDesc();
 
     // by default everything allowed
     public Set<String> autoCorrectBlackList() {

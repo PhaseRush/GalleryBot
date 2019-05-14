@@ -57,4 +57,9 @@ public class SubmitCmd extends Command {
     public String getHelp() {
         return null;
     }
+
+    @Override
+    public String getDesc() {
+        return "Submit artwork for the current contest";
+    }
 }

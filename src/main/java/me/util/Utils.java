@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.util.DiscordException;
+import sx.blah.discord.util.EmbedBuilder;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RequestBuffer;
 
@@ -55,6 +56,15 @@ public class Utils {
         }).get();
     }
 
+    public static void send(IChannel channel, EmbedBuilder embed) {
+        RequestBuffer.request(() -> {
+            try {
+                channel.sendMessage(embed.build());
+            } catch (DiscordException | NullPointerException e) {
+                LOG.error("Embed could not be sent with error: " + e.getMessage());
+            }
+        });
+    }
     public static String readFile(String path) {
         try {
             return Files.lines(Paths.get(System.getProperty("user.dir") + "/" + path)).collect(Collectors.joining("\n"));

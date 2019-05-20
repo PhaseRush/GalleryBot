@@ -20,6 +20,7 @@ public enum Config {
     GITHUB_URL("GITHUB_URL");
 
 
+    // makes the gson work so dont need separate map for every single instance here
     private static class ConfigMap{
         private static final Type configType = new TypeToken<Map<String,String>>(){}.getType();
         private static final Map<String, String> config = new Gson().fromJson(Utils.readFile("data/launch.json"), configType);

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class Utils {
     public static final Gson GSON = new Gson();
-    public final static Logger LOG = LoggerFactory.getLogger("GalleryBot");
+    public final static Logger LOG = LoggerFactory.getLogger("GalleryBotLog");
 
     private static HashMap<String, String> prefixMap = GSON.fromJson(readFile("data/prefix_map.json"),
             new TypeToken<HashMap<String, String>>() {}.getType());

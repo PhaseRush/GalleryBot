@@ -26,6 +26,11 @@ public class Ping extends Command {
 
     @Override
     public String getHelp() {
-        return "Displays my ping";
+        return "!gg ping";
+    }
+
+    @Override
+    public String getDesc() {
+        return "Shows the ping from the `server -> bot`, and `bot -> server -> bot`";
     }
 }

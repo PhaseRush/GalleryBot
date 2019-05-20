@@ -34,4 +34,9 @@ public class Fetch extends Command {
     public String getHelp() {
         return "Used for testing purposes";
     }
+
+    @Override
+    public String getDesc() {
+        return "testing purposes";
+    }
 }

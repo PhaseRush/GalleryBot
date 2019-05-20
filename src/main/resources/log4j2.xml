@@ -1,19 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration status="WARN">
-    <appenders>
+<Configuration>
+    <Appenders>
+
+        <!-- Console Appender -->
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] [%-5level] %logger{36} - %msg%n"/>
+            <PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
         </Console>
 
-        <File name="LogFile" fileName="Gallery_Bot_logs/gallery_log_file.log">
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%-5level] %logger{36} - %msg%n"/>
-        </File>
-    </appenders>
+        <!-- Rolling File Appender -->
+        <RollingFile name="RollingFile">
+            <FileName>${sys:user.dir}/GalleryBot_logs/gallerybot_log_info.log</FileName>
+            <FilePattern>${sys:user.dir}/GalleryBot_logs/gallerybot_log_info_%d{yyyy-MM-dd-hh-mm}.log</FilePattern>
+            <PatternLayout>
+                <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <!--            <DefaultRolloverStrategy max="5" />-->
+        </RollingFile>
 
-    <loggers>
-        <root level="debug">
-            <appender-ref ref="Console" level="info"/>
-            <appender-ref ref="LogFile" level="info"/>
-        </root>
-    </loggers>
-</configuration>
+    </Appenders>
+    <Loggers>
+        <Logger name="GalleryBotLog" level="info" additivity="false">
+            <AppenderRef ref="RollingFile"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
